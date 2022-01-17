@@ -1,0 +1,30 @@
+Geonames
+lordrobotron
+--https://github.com/jcblw/geode/blob/master/geode.js
+
+Weatherbit
+lordrobotron
+7c2e6b5688c24ab6ba3f191493c17886
+
+--https://www.weatherbit.io/api
+
+
+Pixabay
+lordrobotron
+25246232-d48117b7df2b9cd686509f4a6
+GET
+https://pixabay.com/api/
+--https://pixabay.com/api/docs/
+
+
+npm install
+
+# Build and start the webpack dev server at port 8080
+npm run build-dev
+
+In terminal 2, run the following commands:
+
+# generate a `dist` folder for prod
+npm run build-prod
+# Run the Express server on port 8081
+npm start 
