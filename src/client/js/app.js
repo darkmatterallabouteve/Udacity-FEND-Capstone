@@ -1,22 +1,23 @@
 import defaultImage from "../media/defaultPicture.png";
 
+//Primary Function to validate and save trip data 
 function saveTripData() {
-  //console.log("entering... saveTripData")
+    //console.log("entering... saveTripData")
 
-  //Validate field inputs
-  validateData().then( async(data)=> {
-      console.log("saveTripData start", data)
-      if(data) {
-        //Process and Save trip data to server
-        await postData("http://localhost:8081/saveTripData", data).then( async(tripData) => {
+    //Validate field inputs
+    validateData().then( async(data)=> {
+        //console.log("saveTripData start", data)
+        if(data) {
+          //Process and Save trip data to server
+          await postData("http://localhost:8081/saveTripData", data).then( async(tripData) => {
 
-          //console.log("saveTripData end", tripData)
-    
-          //Display data on UI
-          await displayOnUI(tripData)
-        })
-      }
-  })
+            //console.log("saveTripData end", tripData)
+      
+            //Display data on UI
+            await displayOnUI(tripData)
+          })
+        }
+    })
 }
 
 function removeTrip(){
@@ -53,7 +54,7 @@ async function displayOnUI(tripData) {
       document.getElementById("weatherForDepartureDate").innerHTML = `Typical weather for departure date ${tripData.departure} is:`;
       document.getElementById("hiLoTemp").innerHTML = `High: ${tripData.max_temp}, Low: ${tripData.min_temp}`;
       document.getElementById("weatherDescrip").innerHTML = tripData.description;
-      
+
     } else {
       document.getElementById("errorMessages").innerHTML += "Destination not found. Try again.<br/>"; 
     }
@@ -62,41 +63,49 @@ async function displayOnUI(tripData) {
 }
 
 async function validateData() {
-  //console.log("entering... validateData")
-  document.getElementById("errorMessages").innerHTML = "";
+    //console.log("entering... validateData")
+    document.getElementById("errorMessages").innerHTML = "";
 
-  let errorsFound = false;
-  let destination = document.getElementById("destination").value;
-  let departure = document.getElementById("departureDate").value;
-  //console.log(departure)
+    let errorsFound = false;
+    let destination = document.getElementById("destination").value;
+    let departure = document.getElementById("departureDate").value;
+    //console.log(departure)
 
-  if(destination == null || destination == ''){
-    document.getElementById("errorMessages").innerHTML += "Add a destination<br/>"; 
-    errorsFound = true;
-  }
-  if(departure == null || departure == ''){
-    document.getElementById("errorMessages").innerHTML += "Add a departure date<br/>"; 
-    errorsFound = true;
-  } 
-  
-  if(errorsFound) {
-    return false;
-  } else {
-    return {destination: destination, departure: departure};
-  }
+    if(destination == null || destination == ''){
+      document.getElementById("errorMessages").innerHTML += "Add a destination<br/>"; 
+      errorsFound = true;
+    }
+    if(departure == null || departure == ''){
+      document.getElementById("errorMessages").innerHTML += "Add a departure date<br/>"; 
+      errorsFound = true;
+    } else {
+      //Calcualate to determine if the entered date is in the past
+      var departureDate = new Date(document.getElementById("departureDate").value)
+      var now = new Date();
+      now.setHours(0,0,0,0);
+      if (departureDate < now) {
+        document.getElementById("errorMessages").innerHTML += "Departure date in the past<br/>"; 
+        errorsFound = true;
+      }
+    }
+    
+    if(errorsFound) {
+      return false;
+    } else {
+      return {destination: destination, departure: departure};
+    }
 }
 
-// /* Function to POST data */
 const postData = async (url = "", data = {}) => {
     //console.log(data);
     
     const response = await fetch(url, {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        credentials: "same-origin", // include, *same-origin, omit
+        method: "POST", 
+        credentials: "same-origin", 
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
+        body: JSON.stringify(data),
     });
 
     try {
@@ -107,4 +116,4 @@ const postData = async (url = "", data = {}) => {
     }
 };
 
-export { saveTripData, validateData, removeTrip }
+export { saveTripData, removeTrip }
