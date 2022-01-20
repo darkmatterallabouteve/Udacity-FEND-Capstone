@@ -1,6 +1,7 @@
 import { checkForName } from './js/nameChecker'
 import { handleSubmit } from './js/formHandler'
-import { generateWeatherEntry } from './js/app'
+import { saveTripData, removeTrip } from './js/app'
+import defaultImage from "./media/defaultPicture.png";
 
 import './styles/resets.scss'
 import './styles/base.scss'
@@ -9,21 +10,28 @@ import './styles/footer.scss'
 import './styles/header.scss'
 import './styles/style.scss'
 
-console.log(checkForName);
-//alert("I EXIST")
+let image = document.getElementById("travelPicture");
+image.src = defaultImage
 
-/* Global Variables */
+document.getElementById("removeTrip").disabled = true; 
+document.getElementById("tripDetailsWrapper").style.visibility = "hidden"; 
 
-// Event listener to add function to existing HTML DOM element
-const generateBtn = document.getElementById("generate");
+const saveTripBtn = document.getElementById("saveTrip");
+saveTripBtn.addEventListener('click', function respondToTheClick(evt) {
+    console.log('Save Trip Button Pressed.');
+    saveTripData();
+});
 
-generateBtn.addEventListener('click', function respondToTheClick(evt) {
-    console.log('Generate Button Pressed.');
-    generateWeatherEntry();
+const removeTrpBtn = document.getElementById("removeTrip");
+removeTrpBtn.addEventListener('click', function respondToTheClick(evt) {
+    console.log('Remove Trip Button Pressed.');
+    //Re-set the image
+    image.src = defaultImage
+    removeTrip();
 });
 
 export {
     checkForName,
     handleSubmit,
-    generateWeatherEntry
+    saveTripData
 }

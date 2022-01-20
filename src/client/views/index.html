@@ -2,33 +2,48 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Weather Journal</title>
+        <title>Travel Planner</title>
         <link href="https://fonts.googleapis.com/css?family=Oswald:400,600,700|Ranga:400,700&display=swap" rel="stylesheet" />
-        <link rel="shortcut icon" type="image/x-icon" href="favicon.png"/>
+        <link rel="shortcut icon" type="image/x-icon" href="media/favicon.png"/>
     </head>
     <body>
-        <div id="app">
-            <div class="holder headline">
-                Weather Journal App
+        <div class="wrapper">
+            <div class="headline">
+                <h1>Travel Planner</h1>
             </div>
-            <div class="holder zip">
-                <label for="zip">Enter Zipcode here</label>
-                <input type="text" id="zip" placeholder="enter zip code here" />
+            <div class="inputs">
+                <div id="errorMessages" class="errorMessages"></div>
+                <label for="destination">My trip to:</label>
+                <input class="myInput" type="text" id="destination" placeholder="enter destination name here" />
+
+                <label for="departureDate">Departing:</label>
+                <input class="myInput" type="date" id="departureDate" placeholder="MM/DD/YYYY"/>
+                
+                <button class="button" id="saveTrip" type="submit">Save Trip</button>
+                <button class="button" id="removeTrip" type="submit">Remove Trip</button>
             </div>
-            <div class="holder feel">
-                <label for="feelings">How are you feeling today?</label>
-                <textarea class="myInput" id="feelings" placeholder="Enter your feelings here" rows="9" cols="50"></textarea>
-                <button id="generate" type="submit">Generate</button>
-            </div>
-            <div class="holder entry">
-                <div class="title">Most Recent Entry</div>
-                <div id="entryHolder">
-                    <div id="date"></div>
-                    <div id="temp"></div>
-                    <div id="content"></div>
+            <aside class="aside tripDetails">
+                <div id="tripDetailsWrapper">
+                    <div id="tripDetailHeader"><h3>Your Trip:</h3></div>
+                    <div id="daysAway"></div>
+                    <div id="weather">
+                        <div id="weatherForDepartureDate"></div>
+                        <div id="hiLoTemp"></div>
+                        <div id="weatherIconDiv"><img id="weatherIcon" src="#" alt="Weather icon"></div>
+                        <div id="weatherDescrip"></div>
+                    </div>
                 </div>
-            </div>
+            </aside>
+            <aside class="aside picture">
+                <figure>
+                    <img class="scaled" id="travelPicture" src="#" alt="Travel Image">
+                    <figcaption id="travelCaption">Take a trip today!</figcaption>
+                </figure>
+            </aside>
+            <div class="footer">Travel Planner - CAPSTONE Udacity</div>
         </div>
         <script src="app.js" type="text/javascript"></script>
     </body>
 </html>
+
+
