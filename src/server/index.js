@@ -98,7 +98,7 @@ async function getWeatherbitForecastData2(req, res) {
 }
 
 function getProjectData(){
-  return getGeoNamesData2
+  return getGeoNamesData
 }
 
 module.exports =  getProjectData;
