@@ -12,10 +12,7 @@ document.getElementById("removeTrip").disabled = true;
 document.getElementById("tripDetailsWrapper").style.visibility = "hidden"; 
 
 const saveTripBtn = document.getElementById("saveTrip");
-saveTripBtn.addEventListener('click', function respondToTheClick(evt) {
-    //Validate and Save the trip data
-    saveTripData();
-});
+saveTripBtn.addEventListener('click', saveTripData);
 
 const removeTrpBtn = document.getElementById("removeTrip");
 removeTrpBtn.addEventListener('click', function respondToTheClick(evt) {

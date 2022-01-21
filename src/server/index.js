@@ -101,4 +101,4 @@ function getProjectData(){
   return getGeoNamesData
 }
 
-module.exports =  getProjectData;
+module.exports = getProjectData;
