@@ -1,9 +1,9 @@
 // Import the js file to test
-import { getGeoNamesData } from "../src/server/index"
+import { getProjectData } from "../src/server/index"
 
-describe("Testing the getGeoNamesData functionality", () => {
-    test("Testing the getGeoNamesData() function", () => {
-        expect(getGeoNamesData).toBeDefined();
-        //        expect(checkUrl(input)).toEqual(output)
+describe("Testing the getProjectData functionality", () => {
+    test("Testing the getProjectData() function", () => {
+
+        expect(getProjectData).not.toBeNull
     })
 });

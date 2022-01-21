@@ -1,29 +1,54 @@
+//Primary object with placeholder member value pairs.
+let tripData = {destination:'', departure:'', lat:'', lng:'', countryName:'', city:'', picture:'', max_temp:'', min_temp:'', description:'', icon:''}
+
 //Primary Function to validate and save trip data 
 function saveTripData() {
-    //console.log("entering... saveTripData")
+  //console.log("entering... saveTripData")
 
-    //Validate field inputs
-    validateData().then( async(data)=> {
-        //console.log("saveTripData start", data)
-        if(data) {
-          //Process and Save trip data to server
-          await postData("http://localhost:8081/saveTripData", data).then( async(tripData) => {
-            //console.log("saveTripData end", tripData)
-      
-            //Display data on UI
-            await displayOnUI(tripData)
+  //Validate field inputs
+  validateData().then( async(data)=> {
+      //console.log("saveTripData start", data)
+      if(data) {
+        //Process and Save trip data to server
+        await postData("http://localhost:8081/getGeoNamesData", data).then( async(data) => {
+
+          console.log("getGeoNamesData ", data)
+          tripData.lat = data.lat;
+          tripData.lng = data.lng;
+          tripData.countryName = data.countryName;
+          tripData.city = data.city;
+
+          await postData("http://localhost:8081/getPixabayData", data).then( async(data) => {
+
+              console.log("getPixabayData ", data)
+              tripData.picture = data.picture;
+
+            await postData("http://localhost:8081/getWeatherbitForecastData", tripData).then( async(data) => {
+
+                console.log("getWeatherbitForecastData ", data)
+                tripData.max_temp = data.max_temp
+                tripData.min_temp = data.min_temp
+                tripData.description = data.description
+                tripData.icon = data.icon
+
+                //Display data on UI
+                await displayOnUI(tripData)
+             })
           })
-        }
-    })
+        })
+      } //end if
+  })
+  return true;
 }
 
 function removeTrip(){
-  document.getElementById("tripDetailsWrapper").style.visibility = "hidden"; 
-  document.getElementById("removeTrip").disabled = true; 
+    tripData = {destination:'', departure:'', lat:'', lng:'', countryName:'', city:'', picture:'', max_temp:'', min_temp:'', description:'', icon:''}
+    document.getElementById("tripDetailsWrapper").style.visibility = "hidden"; 
+    document.getElementById("removeTrip").disabled = true; 
 }
 
 async function displayOnUI(tripData) {
-    //console.log("tripData")
+    console.log("tripData", tripData)
 
     //Clear form / enable removeTrip btn
     document.getElementById("removeTrip").disabled = false; 
@@ -87,6 +112,8 @@ async function validateData() {
     if(errorsFound) {
       return false;
     } else {
+      tripData.destination = destination
+      tripData.departure = departure
       return {destination: destination, departure: departure};
     }
 }

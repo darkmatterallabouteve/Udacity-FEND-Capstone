@@ -26,4 +26,3 @@ Validation on the form will make sure there no empty values are submitted.
 
 - Incorporate icons into forecast.
 - Allow the user to remove the trip.
-- Pull in an image for the country from Pixabay API when the entered location brings up no results (good for obscure localities). 

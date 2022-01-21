@@ -8,8 +8,6 @@ const fetch = require('node-fetch');
 const dotenv = require('dotenv');
 dotenv.config();
 
-let projectData = {destination:'', departure:'', lat:'', lng:'', countryName:'', city:'', picture:'', max_temp:'', min_temp:'', description:'', icon:''}
-
 app.use(cors())
 app.use(bodyParser.json())
 
@@ -28,77 +26,59 @@ app.listen(8081, function () {
     console.log('Example app listening on port 8081!')
 })
 
-app.post('/saveTripData', saveTripData);
+let geoNamesData = {}
+let pixabayData = {}
+let weatherBitForcastData = {}
 
-async function saveTripData(req, res) {
-    
-    console.log(req.body);
-    
-    //Empty projectData
-    Object.keys(projectData).forEach(key => {
-      projectData[key] = '';
-    });
+app.post('/getGeoNamesData', getGeoNamesData2);
+app.post('/getPixabayData', getPixabayData2);
+app.post('/getWeatherbitForecastData', getWeatherbitForecastData2);
 
-    projectData.destination = req.body.destination;
-    projectData.departure = req.body.departure;
-
-    getGeoNamesData().then ( () => {
-        getPixabayData().then ( () => {
-          getWeatherbitForecastData().then ( () => {
-              console.log("after all", projectData);
-              res.send(projectData) 
-        })
-      })
-    })
-}
-
-async function getGeoNamesData() {
-  const url = `http://api.geonames.org/searchJSON?q=${projectData.destination}&maxRows=1&username=${process.env.GEO_API_KEY}`
+async function getGeoNamesData2(req, res) {
+  const url = `http://api.geonames.org/searchJSON?q=${req.body.destination}&maxRows=1&username=${process.env.GEO_API_KEY}`
   //console.log('url ', url);
 
       const response = await fetch(url);
       try {
-          const geoNamesData = await response.json();
-          console.log(geoNamesData);
+          const data = await response.json();
+          console.log(data);
 
-          projectData.lat = geoNamesData.geonames[0].lat;
-          projectData.lng = geoNamesData.geonames[0].lng;
-          projectData.countryName = geoNamesData.geonames[0].countryName;
-          projectData.city = geoNamesData.geonames[0].toponymName;
+          geoNamesData.lat = data.geonames[0].lat;
+          geoNamesData.lng = data.geonames[0].lng;
+          geoNamesData.countryName = data.geonames[0].countryName;
+          geoNamesData.city = data.geonames[0].toponymName;
 
-          return projectData
+          res.send(geoNamesData) 
       } catch (error) {
           console.log("error", error)
       }
 }
 
-async function getPixabayData () {
-  const url = `https://pixabay.com/api/?key=${process.env.PIXABAY_API_KEY}&q=${projectData.city}&category=places&image_type=photo`
+async function getPixabayData2 (req, res) {
+  const url = `https://pixabay.com/api/?key=${process.env.PIXABAY_API_KEY}&q=${req.body.city}&category=places&image_type=photo`
 
   const response = await fetch(url)
   try {
       const data = await response.json();
+      console.log(data);
+
       if (data.totalHits >= 1) {
-          projectData.picture = data.hits[0].largeImageURL
+        pixabayData.picture = data.hits[0].largeImageURL
       } else {
-        projectData.picture = ""
+        pixabayData.picture = ""
       }
+
+      res.send(pixabayData) 
+
   }catch(error) {
       console.log(error)
   }
 }
 
-async function getWeatherbitForecastData() {
+async function getWeatherbitForecastData2(req, res) {
 
-  const url = `https://api.weatherbit.io/v2.0/forecast/daily?&lat=${projectData.lat}&lon=${projectData.lng}&units=I&key=${process.env.WEATHERBIT_API_KEY}`
+  const url = `https://api.weatherbit.io/v2.0/forecast/daily?&lat=${req.body.lat}&lon=${req.body.lng}&units=I&key=${process.env.WEATHERBIT_API_KEY}`
 
-    //Caculate weather on a future date
-    let departureDate = new Date(projectData.departure);
-    let currentDate = new Date();
-    var time_difference = departureDate.getTime() - currentDate.getTime();  
-    var days_difference = time_difference / (1000 * 60 * 60 * 24);  
-    days_difference = (Math.round(days_difference * 10)/10).toFixed(0);
-   
   //NOTE Historical data is behind a paywall, cannot retrieve this
   //const url = `https://api.weatherbit.io/v2.0/history/daily?&lat=${projectData.lat}&lon=${projectData.lng}&start_date=${projectData.departure}&end_date=${projectData.departure}&key=${process.env.WEATHERBIT_API_KEY}`
 
@@ -107,18 +87,18 @@ async function getWeatherbitForecastData() {
   const response = await fetch(url)
   try {
       const weatherbitForecastData = await response.json();
-      projectData.max_temp =weatherbitForecastData.data[0].max_temp
-      projectData.min_temp = weatherbitForecastData.data[0].min_temp
-      projectData.description = weatherbitForecastData.data[0].weather.description
-      projectData.icon = weatherbitForecastData.data[0].weather.icon
-
+      weatherBitForcastData.max_temp =weatherbitForecastData.data[0].max_temp
+      weatherBitForcastData.min_temp = weatherbitForecastData.data[0].min_temp
+      weatherBitForcastData.description = weatherbitForecastData.data[0].weather.description
+      weatherBitForcastData.icon = weatherbitForecastData.data[0].weather.icon
+      res.send(weatherBitForcastData) 
   } catch (error) {
       console.log(error)
   }
 }
 
-function getImages(){
-  console.log("testing")
+function getProjectData(){
+  return getGeoNamesData2
 }
 
-module.exports = getGeoNamesData, getImages;
+module.exports =  getProjectData;
