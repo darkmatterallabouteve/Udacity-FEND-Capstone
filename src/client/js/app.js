@@ -1,5 +1,3 @@
-import defaultImage from "../media/defaultPicture.png";
-
 //Primary Function to validate and save trip data 
 function saveTripData() {
     //console.log("entering... saveTripData")
@@ -10,7 +8,6 @@ function saveTripData() {
         if(data) {
           //Process and Save trip data to server
           await postData("http://localhost:8081/saveTripData", data).then( async(tripData) => {
-
             //console.log("saveTripData end", tripData)
       
             //Display data on UI
@@ -38,9 +35,7 @@ async function displayOnUI(tripData) {
 
       if(tripData.picture !== null && tripData.picture !== '') {
         document.getElementById("travelPicture").src = tripData.picture;
-      } else {
-        document.getElementById("travelPicture").src = defaultImage;
-      }
+      } 
 
       //calculate time difference 
       let departureDate = new Date(tripData.departure);

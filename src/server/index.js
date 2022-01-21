@@ -8,7 +8,7 @@ const fetch = require('node-fetch');
 const dotenv = require('dotenv');
 dotenv.config();
 
-projectData = {destination:'', departure:'', lat:'', lng:'', countryName:'', city:'', picture:'', max_temp:'', min_temp:'', description:'', icon:''}
+let projectData = {destination:'', departure:'', lat:'', lng:'', countryName:'', city:'', picture:'', max_temp:'', min_temp:'', description:'', icon:''}
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -66,6 +66,7 @@ async function getGeoNamesData() {
           projectData.countryName = geoNamesData.geonames[0].countryName;
           projectData.city = geoNamesData.geonames[0].toponymName;
 
+          return projectData
       } catch (error) {
           console.log("error", error)
       }
@@ -73,29 +74,14 @@ async function getGeoNamesData() {
 
 async function getPixabayData () {
   const url = `https://pixabay.com/api/?key=${process.env.PIXABAY_API_KEY}&q=${projectData.city}&category=places&image_type=photo`
-  //console.log("url", url);
 
   const response = await fetch(url)
   try {
       const data = await response.json();
-
       if (data.totalHits >= 1) {
           projectData.picture = data.hits[0].largeImageURL
-
-      } else if (data.totalHits === 0)  {
-
-          const url = `https://pixabay.com/api/?key=${process.env.PIXABAY_API_KEY}&q=${projectData.countryName}&category=places&image_type=photo`
-          const response = await fetch(url)
-          try{
-              const data = await response.json();
-              if (data.totalHits === 0) {
-                  projectData.picture = ""
-              } else {
-                  projectData.picture = data.hits[0].largeImageURL
-              }
-          }catch(error) {
-              console.log(error)
-          }
+      } else {
+        projectData.picture = ""
       }
   }catch(error) {
       console.log(error)
@@ -112,7 +98,6 @@ async function getWeatherbitForecastData() {
     var time_difference = departureDate.getTime() - currentDate.getTime();  
     var days_difference = time_difference / (1000 * 60 * 60 * 24);  
     days_difference = (Math.round(days_difference * 10)/10).toFixed(0);
-    //console.log("days_difference=", days_difference);
    
   //NOTE Historical data is behind a paywall, cannot retrieve this
   //const url = `https://api.weatherbit.io/v2.0/history/daily?&lat=${projectData.lat}&lon=${projectData.lng}&start_date=${projectData.departure}&end_date=${projectData.departure}&key=${process.env.WEATHERBIT_API_KEY}`
@@ -131,3 +116,9 @@ async function getWeatherbitForecastData() {
       console.log(error)
   }
 }
+
+function getImages(){
+  console.log("testing")
+}
+
+module.exports = getGeoNamesData, getImages;

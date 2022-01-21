@@ -1,12 +1,9 @@
-
 // Import the js file to test
-import { checkForName } from "../src/client/js/nameChecker"
-  
-describe("Testing the submit functionality", () => {
-    test("Testing the checkForName() function", () => {
+import { getGeoNamesData } from "../src/server/index"
 
-           expect(checkForName).toBeDefined();
-           //        expect(checkUrl(input)).toEqual(output)
-
+describe("Testing the getGeoNamesData functionality", () => {
+    test("Testing the getGeoNamesData() function", () => {
+        expect(getGeoNamesData).toBeDefined();
+        //        expect(checkUrl(input)).toEqual(output)
     })
 });
